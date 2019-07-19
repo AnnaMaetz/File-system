@@ -1,5 +1,5 @@
 import path from 'path';
-import Tree from './trees';
+import Tree from './Trees';
 
 import Dir from './Dir';
 import File from './File';
