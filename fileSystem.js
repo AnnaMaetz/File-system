@@ -1,39 +1,29 @@
 import path from 'path';
-import Tree from '/trees';
+import Tree from '@hexlet/trees';
 
-const getPathParts = filepath => filepath.split(path.sep).filter(e => e !== '');
+import Dir from './Dir';
+import File from './File';
+
+const getPathParts = filepath => filepath.split(path.sep).filter(part => part !== '');
 
 export default class {
   constructor() {
-    this.tree = new Tree('/', { type: 'dir' });
+    this.tree = new Tree('/', new Dir('/'));
   }
 
-  isDirectory(filepath) {
+  statSync(filepath) {
     const current = this.findNode(filepath);
-    return !!current && current.getMeta().type === 'dir';
-  }
-
-  isFile(filepath) {
-    const current = this.findNode(filepath);
-    return !!current && current.getMeta().type === 'file';
-  }
-
-  mkdirSync(filepath) {
-    const { dir, base } = path.parse(filepath);
-    if (!this.isDirectory(dir)) {
-      return false;
-    }
-    const parent = this.findNode(dir);
-    return parent.addChild(base, { type: 'dir' });
+    return current.getMeta().getStats();
   }
 
   touchSync(filepath) {
     const { dir, base } = path.parse(filepath);
-    if (!this.isDirectory(dir)) {
-      return false;
-    }
-    const parent = this.findNode(dir);
-    return parent.addChild(base, { type: 'file' });
+    return this.findNode(dir).addChild(base, new File(base));
+  }
+
+  mkdirSync(filepath) {
+    const { dir, base } = path.parse(filepath);
+    return this.findNode(dir).addChild(base, new Dir(base));
   }
 
   findNode(filepath) {
