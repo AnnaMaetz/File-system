@@ -18,7 +18,7 @@ export default class {
 
   touchSync(filepath) {
     const { dir, base } = path.parse(filepath);
-    return this.findNode(dir).addChild(base, new File(base));
+    return this.findNode(dir).addChild(base, new File(base, ''));
   }
 
   mkdirSync(filepath) {
