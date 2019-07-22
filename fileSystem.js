@@ -30,4 +30,31 @@ export default class {
     const parts = getPathParts(filepath);
     return parts.length === 0 ? this.tree : this.tree.getDeepChild(parts);
   }
+  
+  mkdirpSync(filepath) {
+    const pathParts = getPathParts(filepath);
+    const result = pathParts.reduce((subtree, part) => {
+      if (!subtree) {
+        return false;
+      }
+      const current = subtree.getChild(part);
+      if (!current) {
+        return subtree.addChild(part, new Dir(part));
+      }
+      if (current.getMeta().isFile()) {
+        return false;
+      }
+      return current;
+    }, this.tree);
+
+    return !!result;
+  }
+
+  readdirSync(filepath) {
+    const current = this.findNode(filepath);
+    if (!current || current.getMeta().isFile()) {
+      return false;
+    }
+    return current.getChildren().map(e => e.key);
+  }
 }
